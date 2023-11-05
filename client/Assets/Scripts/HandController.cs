@@ -1,9 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
-using Kaart;
+using Models;
 using UnityEngine;
-
-private 
 
 public class HandController : MonoBehaviour
 {
@@ -25,7 +23,7 @@ public class HandController : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        kaarten = new List<Kaart>{
+        var kaarten = new List<Kaart>{
             new Kaart{
                 Kleur = 1,
                 Rang = 2
@@ -39,33 +37,33 @@ public class HandController : MonoBehaviour
                 Rang = 13
             }
         };
-        selectedPosition = kaarten.Count-1;
+        var selectedPosition = kaarten.Count-1;
     }
 
     // Update is called once per frame
-    void Update()
-    {
-        zichtbareKaarten = UpdateZichtbareKaarten();
-        LoadZichtbareKaarten();
-        
-    }
+    // void Update()
+    // {
+    //     zichtbareKaarten = UpdateZichtbareKaarten();
+    //     LoadZichtbareKaarten();
+    //     
+    // }
 
-    private List<int> UpdateZichtbareKaarten(){
-        var result = new List<int>();
-        if (kaarten.Count<=0) 
-            return result;
-        if (kaarten.Count<=aantalKaartenZichtbaar){
-            for(int i = 0; i++; i < kaarten.Count){
-                result.Add(i);
-            }
-            return result;
-        }
-    }
+    // private List<int> UpdateZichtbareKaarten(){
+    //     var result = new List<int>();
+    //     if (kaarten.Count<=0) 
+    //         return result;
+    //     if (kaarten.Count<=aantalKaartenZichtbaar){
+    //         for(int i = 0; i++; i < kaarten.Count){
+    //             result.Add(i);
+    //         }
+    //         return result;
+    //     }
+    // }
 
-    private void LoadZichtbareKaarten(){
-        float xposition = xStart;
-        foreach(Kaart k in zichtbareKaarten){
-            
-        }
-    }
+    // private void LoadZichtbareKaarten(){
+    //     float xposition = xStart;
+    //     foreach(Kaart k in zichtbareKaarten){
+    //         
+    //     }
+    // }
 }
