@@ -4,9 +4,9 @@ import itertools
 import random
 import json
 from flask import Flask
+from werkzeug.middleware.proxy_fix import ProxyFix
 
 kid_counter = 0
-
 class Kaart:
 	def __init__(self):
 		self.kleur = random.choice(["harten", "ruiten", "klaver", "schoppen"])
@@ -95,6 +95,7 @@ class Potssjjj:
 # if __name__ == "__main__":
 
 app = Flask(__name__)
+app.wsgi_app = ProxyFix(app.wsgi_app)
 
 @app.route("/")
 def speel_potsj():
