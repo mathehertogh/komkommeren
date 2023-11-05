@@ -3,6 +3,9 @@
 import itertools
 import random
 import json
+from flask import Flask
+
+kid_counter = 0
 
 class Kaart:
 	def __init__(self):
@@ -28,11 +31,24 @@ class Kaart:
 			print(f"ERROR: kaart met rang {self.rang}")
 		return f"{self.kleur} {rang}"
 
+	def json(self):
+		return self.__dict__
+
 class Komkommeraar:
 	def __init__(self, naam):
+		global kid_counter
 		self.naam = naam
-		self.kid = itertools.count()
+		self.kid = kid_counter
+		kid_counter += 1
 		self.hand = [] # kaarten
+		print(f"Komkommeraar {naam} aangemaakt met kid {self.kid}")
+
+	def json(self):
+		return {
+			'naam': self.naam,
+			'kid': self.kid,
+			'hand': [kaart.json() for kaart in self.hand]
+		}
 
 	def zet(self):
 		kies = random.randint(0, len(self.hand)-1)
@@ -47,8 +63,15 @@ class Komkommeraar:
 class Potssjjj:
 	def __init__(self, deelnemers):
 		self.deelnemers = deelnemers # lijst komkommeraars
-		self.aanzet = 0 # index in deelnemers
+		self.aan_zet = 0 # index in deelnemers
 		self.tafel = [] # slagen
+
+	def json(self):
+		return {
+			'deelnemers': [k.json() for k in self.deelnemers],
+			'aan_zet': self.aan_zet,
+			'tafel': []
+		}
 
 	def delen(self, hoeveel):
 		for k in self.deelnemers:
@@ -59,17 +82,22 @@ class Potssjjj:
 		winnaar = -1
 		hoogste = -1
 		for i in range(len(self.deelnemers)):
-			speler = self.deelnemers[self.aanzet]
+			speler = self.deelnemers[self.aan_zet]
 			opgooi = speler.zet()
 			print(f"{speler.naam:8} gooit op: {opgooi.str()}")
 			if opgooi.rang >= hoogste:
 				hoogste = opgooi.rang
-				winnaar = self.aanzet
-			self.aanzet = (self.aanzet + 1) % len(self.deelnemers)
+				winnaar = self.aan_zet
+			self.aan_zet = (self.aan_zet + 1) % len(self.deelnemers)
 		print(f"{self.deelnemers[winnaar].naam} wint de slag")
-		self.aanzet = winnaar
+		self.aan_zet = winnaar
 
-if __name__ == "__main__":
+# if __name__ == "__main__":
+
+app = Flask(__name__)
+
+@app.route("/")
+def speel_potsj():
 	guus = Komkommeraar("Guus")
 	ralph = Komkommeraar("Rafff")
 	mathe = Komkommeraar("Mathé")
@@ -80,6 +108,9 @@ if __name__ == "__main__":
 	potsj.speel_slag()
 	print()
 	potsj.speel_slag()
+	print(potsj.json())
 	print()
 	potsj.speel_slag()
+	return f"<p>{potsj.deelnemers[potsj.aan_zet].naam} heeft verloren. Slecht gespeeld.</p>"
+
 
